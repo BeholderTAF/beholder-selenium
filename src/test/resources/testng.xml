@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite1" verbose="1">
+
+	<parameter name="parameters" value="browser=firefox;screenshotFolder=/var/tmp/screenshots" />
+	<listeners>
+		<listener
+			class-name="br.ufmg.dcc.saotome.beholder.selenium.listener.ScreenshotListener" />
+		<listener
+			class-name="br.ufmg.dcc.saotome.beholder.selenium.listener.LoggerListener" />
+	</listeners>
+
+	<test name="Nopackage">
+		<packages>
+			<package name="br.ufmg.dcc.saotome.beholder.selenium" />
+		</packages>
+	</test>
+
+</suite>

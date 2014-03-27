@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <configuration status="OFF">
+   <appenders>
+     <Console name="Beholder" target="SYSTEM_OUT">
+       <PatternLayout pattern="%msg%n"/>
+     </Console>
+      <Console name="Tests" target="SYSTEM_OUT">
+       <PatternLayout pattern="%logger{36} - %msg%n"/>
+     </Console>
+   </appenders>
+   <loggers>
+     <logger name="general" level="info">
+        <appender-ref ref="Beholder"/>
+     </logger>
+     <logger name="br" level="trace">
+        <appender-ref ref="Tests"/>
+     </logger>
+   </loggers>
+ </configuration>

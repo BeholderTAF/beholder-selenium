@@ -1,0 +1,7 @@
+analyseLocally=false
+eclipse.preferences.version=1
+projectArtifactId=beholder-selenium
+projectBranch=
+projectGroupId=br.ufmg.dcc.saotome
+serverUrl=http\://qualidade\:9000
+version=1

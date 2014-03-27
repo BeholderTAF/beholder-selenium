@@ -1,0 +1,22 @@
+<!-- 	
+	Esse HTML deverá conter cada um dos elementos implementados pelo Beholder, sendo utilizado como 
+	fonte para os testes unitários do sistema. 
+-->
+<html>
+<script language="JavaScript" type="text/javascript">
+	function show() {
+		var iframe = document.getElementById('iframeId');
+		iframe.style.display = (iframe.style.display == 'none') ? 'block' : 'none';
+	}
+</script>
+<head>
+<title>Prototype iFrame</title>
+</head>
+
+<body>
+	<iframe id="iframeId" src="prototype_iframe_child.html" style="display: none;"></iframe>
+	<button id="buttonId" onClick="show()" >iFrame</button>
+</body>
+	
+	
+</html>

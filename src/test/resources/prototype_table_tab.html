@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>Prototype of a Table</title>
+		<script language="JavaScript" type="text/javascript">
+			function show(text) {
+				var table = document.getElementById('tableId');
+				var div = document.getElementById('divId');
+				var message = document.createTextNode(text);
+				div.appendChild(message);
+			}
+		</script>
+	</head>
+	
+	<body>
+		<table id="tableId">
+			<tbody>
+				<tr>
+					<td onclick="show('tab1')">tab 1</td>
+					<td onclick="show('tab2')">tab 2</td>
+					<td onclick="show('tab3')">tab 3</td>
+				</tr>
+			</tbody>
+		</table>
+		<div id="divId"></div>
+	</body>
+	
+</html>
