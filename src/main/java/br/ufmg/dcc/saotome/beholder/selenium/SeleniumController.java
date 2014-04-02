@@ -93,7 +93,8 @@ public final class SeleniumController {
 		String 	browserName = parametersMap.get("browser"),
 				profile = parametersMap.get("profile"),
 				chromeDriverBin = parametersMap.get("chromeDriverBin"),
-				chromeBin = parametersMap.get("chromeBin");
+				chromeBin = parametersMap.get("chromeBin"),
+				languages = parametersMap.get("languages");
 		
 		if(browserName == null){
 			throw new IllegalArgumentException("");
@@ -104,8 +105,11 @@ public final class SeleniumController {
 				FirefoxProfile fp = new FirefoxProfile();
 				fp.setPreference("dom.max_script_run_time", 0);
 				fp.setPreference("dom.max_chrome_script_run_time", 0);
-				if(profile != null){
+				if(profile != null && !profile.isEmpty()){
 					fp.setPreference("webdriver.firefox.profile", profile);
+				}
+				if(languages != null && !languages.isEmpty()){
+					fp.setPreference("intl.accept_languages", languages);
 				}
 				driver = new WebDriverAdapter(new FirefoxDriver(fp));
 			}
