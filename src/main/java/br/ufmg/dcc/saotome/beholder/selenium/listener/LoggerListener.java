@@ -31,12 +31,14 @@ import org.testng.TestListenerAdapter;
  */
 public class LoggerListener  extends TestListenerAdapter {
 	
+	private static final String MESSAGE_TEMPLATE="Method: %s - %s";
+	
 	@Override
 	public void onTestSuccess(ITestResult tr) {
 		super.onTestSuccess(tr);
 		String methodName = tr.getName();
 		Logger logger = LogManager.getLogger(tr.getTestClass().getName());
-		String message = String.format("Method: %s - SUCCEDED",methodName);
+		String message = String.format(MESSAGE_TEMPLATE,methodName,"SUCCEDED");
 		logger.info(message);
 	}
 	
@@ -45,7 +47,7 @@ public class LoggerListener  extends TestListenerAdapter {
 		super.onTestFailure(tr);
 		String methodName = tr.getName();
 		Logger logger = LogManager.getLogger(tr.getTestClass().getName());
-		String message = String.format("Method: %s - FAILED",methodName);
+		String message = String.format(MESSAGE_TEMPLATE,methodName,"FAILED");
 		logger.error(message);
 	}
 	
@@ -54,7 +56,7 @@ public class LoggerListener  extends TestListenerAdapter {
 		super.onTestSkipped(tr);
 		String methodName = tr.getName();
 		Logger logger = LogManager.getLogger(tr.getTestClass().getName());
-		String message = String.format("Method: %s - SKIPPED",methodName);
+		String message = String.format(MESSAGE_TEMPLATE,methodName,"SKIPPED");
 		logger.info(message);
 	}
 }

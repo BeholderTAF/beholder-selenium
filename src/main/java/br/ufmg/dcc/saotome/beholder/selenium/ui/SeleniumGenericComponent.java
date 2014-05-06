@@ -25,7 +25,7 @@ import br.ufmg.dcc.saotome.beholder.ui.Component;
 import br.ufmg.dcc.saotome.beholder.ui.GenericComponent;
 
 /**
- * TODO
+ * This class implements the Beholder GenericComponent Interface
  * @author icaroclever
  *
  */

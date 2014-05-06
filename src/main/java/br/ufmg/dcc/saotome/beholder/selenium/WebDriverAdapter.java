@@ -56,7 +56,7 @@ class WebDriverAdapter extends RemoteWebDriver implements TakesScreenshot, Killa
 		
 		// Driver cannot be null
 		if(driver == null) {
-			throw new IllegalArgumentException(ErrorMessages.ERROR_DRIVER_IS_NULL); //TODO
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"driver"));
 		}
 		
 		// The driver must be a original drive, if it's not, the class get the original WebDriver

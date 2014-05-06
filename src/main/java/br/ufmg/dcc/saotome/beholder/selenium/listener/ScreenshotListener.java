@@ -64,7 +64,7 @@ public class ScreenshotListener extends TestListenerAdapter {
 		
 		try {
 			FileInputStream screenshot = new FileInputStream(
-					((TakesScreenshot) Listener.getDriver())
+					((TakesScreenshot) ListenerGateway.getDriver())
 							.getScreenshotAs(OutputType.FILE)); // Take the
 																// screenshot
 			File screenshotFile = createFile(tr, createFolder(tr));
@@ -106,7 +106,7 @@ public class ScreenshotListener extends TestListenerAdapter {
 	 */
 	private File createFolder(ITestResult tr) throws IOException{
 		
-		String path = Listener.getParameter(SCREENSHOT_FOLDER);
+		String path = ListenerGateway.getParameter(SCREENSHOT_FOLDER);
 
 		if (path == null || path.isEmpty()) {
 			path = "." + File.separatorChar + "screenshots";

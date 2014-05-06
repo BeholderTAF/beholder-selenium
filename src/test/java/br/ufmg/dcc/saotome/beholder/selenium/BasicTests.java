@@ -19,16 +19,16 @@
  */
 package br.ufmg.dcc.saotome.beholder.selenium;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.openqa.selenium.UnhandledAlertException;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import br.ufmg.dcc.saotome.beholder.Browser;
 import br.ufmg.dcc.saotome.beholder.builder.Builder;
-import br.ufmg.dcc.saotome.beholder.selenium.listener.Listener;
+import br.ufmg.dcc.saotome.beholder.selenium.listener.ListenerGateway;
 import br.ufmg.dcc.saotome.beholder.selenium.listener.ScreenshotListener;
 import br.ufmg.dcc.saotome.beholder.ui.Div;
 import br.ufmg.dcc.saotome.beholder.ui.IFrame;
@@ -117,15 +117,17 @@ public class BasicTests {
 	}
 
 	@Test
-	public void verifyScreenshot() throws IOException {
+	public void verifyScreenshot() {
 
-		Listener.setWebDriver(SeleniumController.getDriver());
+		ListenerGateway.setWebDriver(SeleniumController.getDriver());
 		ScreenshotListener listener = new ScreenshotListener();
 
 		browser.open(PROTOTYPE_PATH);
-		listener.onTestFailure(null);
+		try {
+			listener.onTestFailure(null);
+		} catch (UnhandledAlertException uae){	
+		}
 		browser.getAlert().confirm();
-
 		browser.open(PROTOTYPE_IFRAME_PATH);
 		listener.onTestFailure(null);
 

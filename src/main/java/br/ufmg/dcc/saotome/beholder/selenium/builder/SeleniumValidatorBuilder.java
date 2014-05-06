@@ -24,9 +24,9 @@ import br.ufmg.dcc.saotome.beholder.selenium.validators.SeleniumComponentValidat
 import br.ufmg.dcc.saotome.beholder.validators.ComponentValidator;
 
 /**
- * TODO
+ * Implements the Beholder class ValidatorBuilder to construct Selenium objects in the Beholder's interface.
  * @author icaroclever
- *
+ * @see ValidatorBuilder
  */
 public class SeleniumValidatorBuilder implements ValidatorBuilder {
 

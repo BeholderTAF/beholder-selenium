@@ -25,15 +25,12 @@ package br.ufmg.dcc.saotome.beholder.selenium.message;
  */
 public interface ErrorMessages {
 
-	String ERROR_DRIVER_IS_NULL="WebDriver cannot be null.";
 	String ERROR_BROWSER_INVALID = "The browser % is invalid.";
-	String ERROR_ELEMENT_IS_NULL="WebElement cannot be null.";
-	String ERROR_LOCATOR_IS_NULL="Locator cannot be null.";
 	String ERROR_CANNOT_RELOAD_ELEMENT = "This element cannot be reloaded because there aren't ID or NAME attributes.";
 	String ERROR_ELEMENT_WAS_NOT_LOADED = "WebElement was not loaded.";
 	String ERROR_TAGS_DIFFERENTS = "Element loaded is not of the same tag.";
 	String ERROR_ATTRIBUTE_EMPTY="Attribute cannot be null or empty";
-	String ERROR_VALUE_NULL="Value cannot be null";
+	String ERROR_TEMPLATE_VARIABLE_NULL="'%s' cannot be null";
 	String ERROR_INVALID_TAG_TO_CLASS="The Element %s is not a valid element to the class";
 	String ERROR_INDEX_NEGATIVE = "Index cannot be a negative number.";
 	String ERROR_INDEX_NEGATIVE_ZERO = "Index cannot be negative or zero.";

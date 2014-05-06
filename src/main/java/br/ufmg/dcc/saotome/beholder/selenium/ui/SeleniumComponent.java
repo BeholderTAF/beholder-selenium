@@ -45,22 +45,24 @@ public abstract class SeleniumComponent implements Component {
 
 	private static class Locator {
 
-		public static final String ATTRIBUTE = "attribute";
-		public static final String ID = "id";
-		public static final String NAME = "name";
+		public enum LocatorType{
+			ATTRIBUTE,
+			ID,
+			NAME;
+		}
 
-		private String loadBy;
+		private LocatorType loadBy;
 		private String value;
 		private String tagName;
 		private String attributeName;
 
-		public Locator(String loadBy, String value) {
+		public Locator(LocatorType loadBy, String value) {
 			this.loadBy = loadBy;
 			this.value = value;
 		}
 
 		public Locator(String tagName, String attributeName, String value) {
-			this(ATTRIBUTE, value);
+			this(LocatorType.ATTRIBUTE, value);
 			this.attributeName = attributeName;
 			this.tagName = tagName;
 		}
@@ -71,32 +73,6 @@ public abstract class SeleniumComponent implements Component {
 	private Boolean isDisplayed = true;
 	private Locator locator;
 
-	
-
-	@Override
-	public void show() {
-
-		this.isDisplayed = true;
-		
-		if (Locator.ID.equals(locator.loadBy)) {
-			loadById(this.locator.value);
-		} else if (Locator.NAME.equals(locator.loadBy)) {
-			loadByName(this.locator.value);
-		} else if (Locator.ATTRIBUTE.equals(locator.loadBy)) {
-			loadByAttribute(this.locator.tagName, locator.attributeName,
-					this.locator.value);
-		}
-	}
-
-	@Override
-	public boolean isDisplayed() {
-		return this.isDisplayed;
-	}
-
-	@Override
-	public void hide() {
-		this.isDisplayed = false;
-	}
 
 	/** Maximum wait for a component */
 	public static final long TIMEOUT = 30;// seconds
@@ -127,8 +103,7 @@ public abstract class SeleniumComponent implements Component {
 	public final void setElement(final WebElement element) {
 
 		if (element == null) {
-			throw new IllegalArgumentException(
-					ErrorMessages.ERROR_ELEMENT_IS_NULL);
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"element"));
 		}
 
 		this.element = element;
@@ -143,12 +118,11 @@ public abstract class SeleniumComponent implements Component {
 			throw new IllegalArgumentException(
 					ErrorMessages.ERROR_ELEMENT_WAS_NOT_LOADED);
 		}
-
-		if (!this.attributes.containsKey(attribute)) {
-			this.setAttribute(attribute,
-					this.getElement().getAttribute(attribute));
+		if (attribute == null || attribute.isEmpty()){
+			throw new IllegalArgumentException(ErrorMessages.ERROR_ATTRIBUTE_EMPTY);
 		}
-		return this.attributes.get(attribute);
+		
+		return this.getElement().getAttribute(attribute);
 	}
 
 	@Override
@@ -159,7 +133,7 @@ public abstract class SeleniumComponent implements Component {
 		}
 
 		if (value == null) {
-			throw new IllegalArgumentException(ErrorMessages.ERROR_VALUE_NULL);
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"value"));
 		}
 
 		this.attributes.put(attribute, value);
@@ -210,11 +184,24 @@ public abstract class SeleniumComponent implements Component {
 
 	@Override
 	public void loadById(final String value) {
-		this.locator = new Locator(Locator.ID, value);
-
+		this.locator = new Locator(Locator.LocatorType.ID, value);
 		if (this.isDisplayed) {
 			this.setId(value);
 			this.setElement(selenium.findElement(By.id(value)));
+		}
+	}
+	
+	public void reloadElement(){
+		switch(this.locator.loadBy){
+		case ID:
+			loadById(this.locator.value);
+			break;
+		case NAME:
+			loadByName(this.locator.value);
+			break;
+		case ATTRIBUTE:
+			loadByAttribute(this.locator.tagName, locator.attributeName,this.locator.value);
+			break;
 		}
 	}
 
@@ -230,7 +217,7 @@ public abstract class SeleniumComponent implements Component {
 
 	@Override
 	public void loadByName(final String value) {
-		this.locator = new Locator(Locator.NAME, value);
+		this.locator = new Locator(Locator.LocatorType.NAME, value);
 		if (this.isDisplayed) {
 			this.setName(value);
 			this.setElement(selenium.findElement(By.name(value)));
@@ -318,6 +305,7 @@ public abstract class SeleniumComponent implements Component {
 	}
 
 	/**
+	 * Getter to the parent component
 	 * @return the parent
 	 */
 	public SeleniumComponent getParent() {
@@ -325,10 +313,27 @@ public abstract class SeleniumComponent implements Component {
 	}
 
 	/**
+	 * Setter to the parent compoment
 	 * @param parent
 	 *            the parent to set
 	 */
 	public void setParent(SeleniumComponent parent) {
 		this.parent = parent;
+	}
+	
+	@Override
+	public void show() {
+		this.isDisplayed = true;
+		reloadElement();
+	}
+
+	@Override
+	public boolean isDisplayed() {
+		return this.isDisplayed;
+	}
+
+	@Override
+	public void hide() {
+		this.isDisplayed = false;
 	}
 }

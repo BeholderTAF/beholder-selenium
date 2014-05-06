@@ -93,7 +93,7 @@ public class SeleniumIFrame extends SeleniumComponent implements IFrame {
 		stack.push(frameDeep-1);
 		
 		if(this.getElement() == null){
-			throw new IllegalArgumentException(ErrorMessages.ERROR_ELEMENT_IS_NULL);
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"element"));
 		}
 		
 		this.getSeleniumWebDriver().switchTo().frame(this.getElement());

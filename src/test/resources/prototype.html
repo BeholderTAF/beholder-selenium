@@ -3,29 +3,16 @@
 	fonte para os testes unitários do sistema. 
 -->
 <html>
-	<script language="JavaScript" type="text/javascript">
-		// Função para verificar a confirmação ou cancelamento em um 
-		// alerta de confirmação, ou ok em um alerta de aviso
-		function alerta_confirmacao() {
-			var decisao;
-			decisao = confirm("Confirmação de um Alerta");
-
-			if(decisao) {
-				alert("Confirmado");
-			}
-			else {
-				alert("Cancelado");
-			}
-		}
+	<script language="JavaScript" type="text/javascript" src="prototype.js">
 	</script>
 	<head>
 		<title>Protótipo para Teste</title>
 	</head>
 
-	<body onLoad="alerta_confirmacao();" >
+	<body onload="alerta_confirmacao();">
 		<!-- Campo Texto (TextField) -->
 		<input id="idInputText" name="nameInputText" type="text" value="valueInputText" />
-		<button id="idAlerta" name="nameAlerta" type="button" ">Alerta</button>
+		<button id="idAlerta" name="nameAlerta" type="button">Alerta</button>
 	</body>
 	
 	

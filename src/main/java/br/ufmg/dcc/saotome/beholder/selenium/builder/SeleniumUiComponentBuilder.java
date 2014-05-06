@@ -44,9 +44,9 @@ import br.ufmg.dcc.saotome.beholder.ui.form.TextField;
 import br.ufmg.dcc.saotome.beholder.ui.table.Table;
 
 /**
- * TODO
+ * Implements the Beholder class UiCompomentBuilder to construct Selenium objects in the Beholder's interface.
  * @author icaroclever
- *
+ * @see UiComponentBuilder
  */
 public class SeleniumUiComponentBuilder implements UiComponentBuilder{
 	

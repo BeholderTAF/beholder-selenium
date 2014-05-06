@@ -28,6 +28,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.ufmg.dcc.saotome.beholder.Browser;
+import br.ufmg.dcc.saotome.beholder.selenium.message.ErrorMessages;
 import br.ufmg.dcc.saotome.beholder.selenium.ui.SeleniumComponent;
 
 /**
@@ -38,9 +39,10 @@ import br.ufmg.dcc.saotome.beholder.selenium.ui.SeleniumComponent;
 public class SeleniumBrowser implements Browser {
 
 	public void open(final URL url) {
-		if (url != null) {
-			SeleniumController.getDriver().get(url.toString());
-		} // TODO else with ERROR MESSAGE
+		if (url == null) {
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"url"));
+		}
+		SeleniumController.getDriver().get(url.toString());
 	}
 
 	@Override

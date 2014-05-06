@@ -40,13 +40,17 @@ public class SeleniumBuilder implements Builder {
 	/** Browser driver that contains the application component search. */
 	private static WebDriver driver;
 	
-	/**
-	 * @return the driver
+	/** Getter to return  a browser driver
+	 * @return the browser driver
 	 */
 	static WebDriver getDriver() {
 		return driver;
 	}
 
+	/**
+	 * Builder Constructor
+	 * @param driver Browser driver
+	 */
 	public SeleniumBuilder(WebDriver driver) {
 		SeleniumBuilder.driver = driver;
 	}

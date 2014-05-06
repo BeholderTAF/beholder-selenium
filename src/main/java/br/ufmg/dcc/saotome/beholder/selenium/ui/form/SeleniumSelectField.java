@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -66,25 +65,16 @@ public class SeleniumSelectField extends SeleniumComponent implements Select {
 	@Override
 	public final List<Option> getOptions() {
 
-		try {
-			SeleniumOption option;
-			List<WebElement> webElements = getElement().findElements(By.tagName("option"));
-			for (WebElement element : webElements) {
-				option = new SeleniumOption();
-				option.setIndex(Integer.valueOf(element.getAttribute("index")));
-				option.setValue(element.getAttribute("value"));
-				option.setText(element.getText());
-				option.webElement = element;
-				options.add(option);
-			}
-			// TODO Esse if está impedindo a releitura das opções quando o select é carregado antes de ser atualizado.
-		} catch (StaleElementReferenceException e) {
-			loadById(getId());
-			// TODO verificar como tratar
-			if(!this.options.isEmpty()) {
-				this.options = new ArrayList<Option>(); // reset the list
-			}
-						
+		SeleniumOption option;
+		reloadElement();
+		List<WebElement> webElements = getElement().findElements(By.tagName("option"));
+		for (WebElement element : webElements) {
+			option = new SeleniumOption();
+			option.setIndex(Integer.valueOf(element.getAttribute("index")));
+			option.setValue(element.getAttribute("value"));
+			option.setText(element.getText());
+			option.webElement = element;
+			options.add(option);
 		}
 		return this.options;
 	}
@@ -123,13 +113,8 @@ public class SeleniumSelectField extends SeleniumComponent implements Select {
 
 		assert value != null;
 		
-		try {
-			this.selectByType(type, value);
-		} catch (StaleElementReferenceException e) {
-			// TODO verificar como tratar
-			loadById(getId());
-			this.selectByType(type, value);
-		}
+		reloadElement();
+		this.selectByType(type, value);
 	}
 
 	private void selectByType(final Type type, final Object value) {

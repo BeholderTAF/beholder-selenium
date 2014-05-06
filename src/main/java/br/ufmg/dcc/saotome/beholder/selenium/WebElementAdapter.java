@@ -101,12 +101,12 @@ class WebElementAdapter implements WebElement{
 
 		// Element cannot be null
 		if (element == null) {
-			throw new IllegalArgumentException(ErrorMessages.ERROR_ELEMENT_IS_NULL);
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"element"));
 		}
 
 		// Locator cannot be null
 		if (locator == null) {
-			throw new IllegalArgumentException(ErrorMessages.ERROR_LOCATOR_IS_NULL);
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"locator"));
 		}
 		
 		this.element = element;

@@ -23,7 +23,11 @@ import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 
-public final class Listener {
+/**
+ * This class holds parameters and variables commonly used in all system. 
+ * @author icaroclever
+ */
+public final class ListenerGateway {
 
 	private static WebDriver driver;
 	
@@ -32,7 +36,7 @@ public final class Listener {
 	/**
 	 * @return the parameters
 	 */
-	public static String getParameter(String parameter) {
+	static String getParameter(String parameter) {
 		return parameters.get(parameter);
 	}
 
@@ -40,20 +44,25 @@ public final class Listener {
 	 * @param parameters the parameters to set
 	 */
 	public static void setParameters(Map<String, String> parameters) {
-		Listener.parameters = parameters;
+		ListenerGateway.parameters = parameters;
 	}
 
-	private Listener() {
+	private ListenerGateway() {
 	}
 
 	/**
-	 * @return the driver
+	 * Getter to return  a browser driver
+	 * @return the browser driver
 	 */
 	static WebDriver getDriver() {
 		return driver;
 	}
 	
+	/**
+	 * Setter to browser driver
+	 * @param driver Browser driver
+	 */
 	public static void setWebDriver(final WebDriver driver) {
-		Listener.driver = driver;
+		ListenerGateway.driver = driver;
 	}
 }
