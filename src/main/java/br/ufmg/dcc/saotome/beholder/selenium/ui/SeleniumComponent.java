@@ -52,6 +52,7 @@ public abstract class SeleniumComponent implements Component {
 			ID,
 			NAME,
 			XPATH;
+			
 		}
 
 		private LocatorType loadBy;
