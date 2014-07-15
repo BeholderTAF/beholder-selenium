@@ -28,9 +28,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.ufmg.dcc.saotome.beholder.selenium.message.ErrorMessages;
+
 import br.ufmg.dcc.saotome.beholder.ui.Component;
 
 /**
@@ -48,7 +50,8 @@ public abstract class SeleniumComponent implements Component {
 		public enum LocatorType{
 			ATTRIBUTE,
 			ID,
-			NAME;
+			NAME,
+			XPATH;
 		}
 
 		private LocatorType loadBy;
@@ -202,6 +205,9 @@ public abstract class SeleniumComponent implements Component {
 		case ATTRIBUTE:
 			loadByAttribute(this.locator.tagName, locator.attributeName,this.locator.value);
 			break;
+		case XPATH:
+			loadByXPath(this.locator.value);
+			break;
 		}
 	}
 
@@ -222,6 +228,28 @@ public abstract class SeleniumComponent implements Component {
 			this.setName(value);
 			this.setElement(selenium.findElement(By.name(value)));
 		}
+	}
+
+	@Override
+	public final String getXPath(){
+		return this.getAttribute("xpath");
+	}
+	
+	@Override
+	public void setXPath(String value){
+		this.setAttribute("xpath", value);		
+	}
+	
+	@Override
+	public void loadByXPath(final String value){		
+		this.locator = new Locator(Locator.LocatorType.XPATH , value);
+		if(this.isDisplayed){
+			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(), 	TIMEOUT);			
+			wait.until(ExpectedConditions.visibilityOf(getSeleniumWebDriver().findElement(By.xpath(value))));
+			setXPath(value);
+			setElement(getSeleniumWebDriver().findElement(By.xpath(value)));
+		}
+	
 	}
 
 	/**
@@ -252,14 +280,15 @@ public abstract class SeleniumComponent implements Component {
 
 	public void validateAttributes() {
 
-		for (Entry<String, String> attribute : this.attributes.entrySet()) {
-			if (!getElement().getAttribute(attribute.getKey())
-					.equalsIgnoreCase(attribute.getValue())) {
-				throw new IllegalArgumentException(
-						ErrorMessages.ERROR_ELEMENTS_ATTRIBUTES_NOT_MATCH);
-			}
+		for (Entry<String, String> attribute : this.attributes.entrySet()) {		
+			  if(!attribute.getKey().equals("xpath"))
+				  if (!getElement().getAttribute(attribute.getKey())
+							.equalsIgnoreCase(attribute.getValue())) {
+						throw new IllegalArgumentException(
+								ErrorMessages.ERROR_ELEMENTS_ATTRIBUTES_NOT_MATCH);
+					}			
 
-		}
+			}
 
 	}
 
