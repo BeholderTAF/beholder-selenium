@@ -51,7 +51,7 @@ public abstract class SeleniumComponent implements Component {
 			ATTRIBUTE,
 			ID,
 			NAME,
-			XPATH;
+			XPATH;	
 			
 		}
 
