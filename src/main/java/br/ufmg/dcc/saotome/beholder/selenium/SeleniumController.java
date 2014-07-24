@@ -98,9 +98,10 @@ public final class SeleniumController {
 		String 	browserName = parametersMap.get("browser"),
 				profile = parametersMap.get("profile"),
 				chromeDriverBin = parametersMap.get("chromeDriverBin"),
+				ieDriverBin = parametersMap.get("ieDriverBin"),
 				chromeBin = parametersMap.get("chromeBin"),
 				languages = parametersMap.get("languages");
-		
+				
 		if(browserName == null){
 			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"browser"));
 		}
@@ -141,6 +142,10 @@ public final class SeleniumController {
 			}
 			else if(BrowsersList.IE.equalsString(browserName))
 			{
+				if(ieDriverBin == null){
+						throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"ieDriverBin"));
+				}
+				System.setProperty("webdriver.ie.driver", ieDriverBin);	
 				driver = new WebDriverAdapter(new InternetExplorerDriver());
 			}
 			else if(BrowsersList.HTML_UNIT.equalsString(browserName)){
