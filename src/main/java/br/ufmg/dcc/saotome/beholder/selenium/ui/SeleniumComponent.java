@@ -19,6 +19,7 @@
  */
 package br.ufmg.dcc.saotome.beholder.selenium.ui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.ufmg.dcc.saotome.beholder.selenium.message.ErrorMessages;
-
 import br.ufmg.dcc.saotome.beholder.ui.Component;
 
 /**
@@ -43,7 +43,7 @@ import br.ufmg.dcc.saotome.beholder.ui.Component;
  * @author Ícaro Clever F. Braga (icaroclever@gmail.com)
  * @see Component
  */
-public abstract class SeleniumComponent implements Component {
+public abstract  class SeleniumComponent implements Component {
 
 	private static class Locator {
 
@@ -54,7 +54,8 @@ public abstract class SeleniumComponent implements Component {
 			XPATH;	
 			
 		}
-
+		
+		
 		private LocatorType loadBy;
 		private String value;
 		private String tagName;
@@ -76,8 +77,7 @@ public abstract class SeleniumComponent implements Component {
 	private SeleniumComponent parent;
 	private Boolean isDisplayed = true;
 	private Locator locator;
-
-
+	
 	/** Maximum wait for a component */
 	public static final long TIMEOUT = 30;// seconds
 
@@ -174,10 +174,60 @@ public abstract class SeleniumComponent implements Component {
 			wait.until(resultsAreDisplayed);
 		}
 	}
-
+	
+  
+	
+	@Override
+	public <T extends Component,  Y extends T> List<T> loadByAttribute(Class<Y> type, final String IdFather, final String tagName, 
+			final String attributeName, final String value) {
+				
+		List<T> components = new ArrayList<T>();
+		
+		this.locator = new Locator(tagName, attributeName,
+				value);
+		
+		if (this.isDisplayed) {
+			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),
+					TIMEOUT);
+		
+			wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName(tagName)));
+			List<WebElement> elements;
+			
+			if (IdFather == null){
+				elements  =  getSeleniumWebDriver()
+					.findElements(By.tagName(tagName));
+			} else {
+				elements = getSeleniumWebDriver().findElement(By.id(IdFather)).
+						findElements(By.tagName(tagName));
+			}	
+			
+			for (WebElement el : elements) {
+				if ((el.getAttribute(attributeName) != null)
+						&& (el.getAttribute(attributeName)
+								.equalsIgnoreCase(value))) {	
+						T sc = null;
+				
+						try {
+							// Use of reflection for instantiate sc 
+							// this equivalent the get an instance of Builder.uiComponentBuilderInstance()
+							sc =  	(T) type.getDeclaredConstructor(
+									WebDriver.class).newInstance(getSeleniumWebDriver());
+						
+						} catch (Exception e) {						
+							e.printStackTrace();
+						}
+						
+						((SeleniumComponent) sc).setAttribute(attributeName, value);
+						((SeleniumComponent) sc).setElement(el);			
+						components.add(sc);
+				}
+			}
+		}
+		return components;
+	}
+	
 	@Override
 	public final String getId() {
-
 		return this.getAttribute("id");
 	}
 
@@ -252,6 +302,7 @@ public abstract class SeleniumComponent implements Component {
 		}
 	
 	}
+
 
 	/**
 	 * Verify if the element loaded is a valid element for the class that is
