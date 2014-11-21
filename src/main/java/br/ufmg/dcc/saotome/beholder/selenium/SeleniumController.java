@@ -171,6 +171,7 @@ public final class SeleniumController {
 	{
 		if(driver != null) {
 			driver.quit();
+			driver = null;
 		}
 	}
 
