@@ -14,12 +14,12 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>2.39.0</version>
+			<version>RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.8</version>
+			<version>RELEASE</version>
 		</dependency>
 		<dependency>
     <groupId>org.apache.logging.log4j</groupId>

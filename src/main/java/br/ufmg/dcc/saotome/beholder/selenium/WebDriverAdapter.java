@@ -211,6 +211,11 @@ class WebDriverAdapter extends RemoteWebDriver implements TakesScreenshot, Killa
 		public Alert alert() {
 			return this.targetLocator.alert();
 		}
+
+		@Override
+		public WebDriver parentFrame() {
+			return this.targetLocator.parentFrame();
+		}
 		
 	}
 }
