@@ -3,10 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.ufmg.dcc.saotome</groupId>
 	<artifactId>beholder-selenium</artifactId>
-	<version>1.3.3-SNAPSHOT</version>
+	<version>1.3.2-SNAPSHOT</version>
 
 	<name>Beholder-Selenium Testing Automated Framework</name>
 	<description>Framework with Interfaces creating a standard of Components to create Test Cases.</description>
+	<url>https://github.com/BeholderTAF/beholder-selenium/wiki</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
