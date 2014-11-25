@@ -4,3 +4,6 @@ test-output/
 .classpath
 .project
 .checkstyle
+pom.xml.*
+release.properties
+
