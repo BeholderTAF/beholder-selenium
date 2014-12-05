@@ -45,150 +45,73 @@ import br.ufmg.dcc.saotome.beholder.ui.Component;
  */
 public abstract  class SeleniumComponent implements Component {
 
-	private static class Locator {
-
-		public enum LocatorType{
-			ATTRIBUTE,
-			ID,
-			NAME,
-			XPATH;	
-			
-		}
-		
-		
-		private LocatorType loadBy;
-		private String value;
-		private String tagName;
-		private String attributeName;
-
-		public Locator(LocatorType loadBy, String value) {
-			this.loadBy = loadBy;
-			this.value = value;
-		}
-
-		public Locator(String tagName, String attributeName, String value) {
-			this(LocatorType.ATTRIBUTE, value);
-			this.attributeName = attributeName;
-			this.tagName = tagName;
-		}
-	}
-
+	/** Maximum wait for a component */
+	public static final long TIMEOUT = 30;// seconds
+	
 	private final WebDriver selenium;
 	private SeleniumComponent parent;
 	private Boolean isDisplayed = true;
 	private Locator locator;
-	
-	/** Maximum wait for a component */
-	public static final long TIMEOUT = 30;// seconds
+	private Boolean validated = false;
 
 	private WebElement element;
 	private Map<String, String> attributes = new HashMap<String, String>();
 
+	/* ------------------------------------------------------------------------ *
+	 *							CONTRUCTORS										*
+	 * ------------------------------------------------------------------------ */
+	
 	public SeleniumComponent(final WebDriver driver) {
 		this.selenium = driver;
 	}
+	
+	/* ------------------------------------------------------------------------ *
+	 *							IMPLEMENTED METHODS								*
+	 * ------------------------------------------------------------------------ */
 
-	/**
-	 * The Selenium-Webdriver element that represents the component HTML of the
-	 * simulated page.
-	 * 
-	 * @return WebElement element
-	 */
-	public final WebElement getElement() {
-		return this.element;
-	}
-
-	/**
-	 * The Selenium-Webdriver element that represents the component HTML of the
-	 * simulated page.
-	 * 
-	 * @param element WebElement object
-	 */
-	public final void setElement(final WebElement element) {
-
-		if (element == null) {
-			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"element"));
-		}
-
-		this.element = element;
-
-		validateElementTag();
-		validateAttributes();
-	}
-
+	
 	@Override
 	public String getAttribute(final String attribute) {
-		if (this.getElement() == null) {
-			throw new IllegalArgumentException(
-					ErrorMessages.ERROR_ELEMENT_WAS_NOT_LOADED);
-		}
-		if (attribute == null || attribute.isEmpty()){
-			throw new IllegalArgumentException(ErrorMessages.ERROR_ATTRIBUTE_EMPTY);
-		}
 		
-		return this.getElement().getAttribute(attribute);
+		if (this.element == null) { throw new IllegalArgumentException(ErrorMessages.ERROR_ELEMENT_WAS_NOT_LOADED); }
+		if (attribute == null || attribute.isEmpty()){ throw new IllegalArgumentException(ErrorMessages.ERROR_ATTRIBUTE_EMPTY); }
+		
+		return this.element.getAttribute(attribute);
 	}
 
 	@Override
 	public void setAttribute(final String attribute, final String value) {
-		if (attribute == null || attribute.isEmpty()) {
-			throw new IllegalArgumentException(
-					ErrorMessages.ERROR_ATTRIBUTE_EMPTY);
-		}
-
-		if (value == null) {
-			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"value"));
-		}
-
+		
+		if (attribute == null || attribute.isEmpty()) { throw new IllegalArgumentException( ErrorMessages.ERROR_ATTRIBUTE_EMPTY); }
+		if (value == null) { throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"value")); }
+		
 		this.attributes.put(attribute, value);
 	}
-
+	
 	@Override
-	public void loadByAttribute(final String tagName,
-			final String attributeName, final String value) {
-
-		this.locator = new Locator(tagName, attributeName,
-				value);
-
-		if (this.isDisplayed) {
-			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),
-					TIMEOUT);
-			ExpectedCondition<Boolean> resultsAreDisplayed = new ExpectedCondition<Boolean>() {
-
-				public Boolean apply(WebDriver arg0) {
-					List<WebElement> elements = getSeleniumWebDriver()
-							.findElements(By.tagName(tagName));
-					for (WebElement el : elements) {
-						if ((el.getAttribute(attributeName) != null)
-								&& (el.getAttribute(attributeName)
-										.equalsIgnoreCase(value))) {
-							setAttribute(attributeName, value);
-							setElement(el);
-							return true;
-						}
-					}
-					return false;
-				}
-
-			};
-			wait.until(resultsAreDisplayed);
-		}
+	public void loadByAttribute(final String tagName,final String attributeName, final String value) {
+		this.locator = new Locator(tagName, attributeName,value);
 	}
 	
-  
+	@Override
+	public void loadById(final String value) {
+		this.locator = new Locator(Locator.LocatorType.ID, value);
+	}
 	
 	@Override
-	public <T extends Component,  Y extends T> List<T> loadByAttribute(Class<Y> type, final String IdFather, final String tagName, 
-			final String attributeName, final String value) {
+	public void loadByName(final String value) {
+		this.locator = new Locator(Locator.LocatorType.NAME, value);
+	}
+	
+	@Override
+	public <T extends Component,  Y extends T> List<T> loadByAttribute(Class<Y> type, final String IdFather, final String tagName, final String attributeName, final String value) {
 				
 		List<T> components = new ArrayList<T>();
 		
-		this.locator = new Locator(tagName, attributeName,
-				value);
+		this.locator = new Locator(tagName, attributeName,value);
 		
 		if (this.isDisplayed) {
-			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),
-					TIMEOUT);
+			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),TIMEOUT);
 		
 			wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName(tagName)));
 			List<WebElement> elements;
@@ -227,6 +150,17 @@ public abstract  class SeleniumComponent implements Component {
 	}
 	
 	@Override
+	public void loadByXPath(final String value){		
+		this.locator = new Locator(Locator.LocatorType.XPATH , value);
+		if(this.isDisplayed){
+			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(), 	TIMEOUT);			
+			wait.until(ExpectedConditions.visibilityOf(getSeleniumWebDriver().findElement(By.xpath(value))));
+			setXPath(value);
+			setElement(getSeleniumWebDriver().findElement(By.xpath(value)));
+		}
+	}
+	
+	@Override
 	public final String getId() {
 		return this.getAttribute("id");
 	}
@@ -235,33 +169,7 @@ public abstract  class SeleniumComponent implements Component {
 	public void setId(String value) {
 		this.setAttribute("id", value);
 	}
-
-	@Override
-	public void loadById(final String value) {
-		this.locator = new Locator(Locator.LocatorType.ID, value);
-		if (this.isDisplayed) {
-			this.setId(value);
-			this.setElement(selenium.findElement(By.id(value)));
-		}
-	}
 	
-	public void reloadElement(){
-		switch(this.locator.loadBy){
-		case ID:
-			loadById(this.locator.value);
-			break;
-		case NAME:
-			loadByName(this.locator.value);
-			break;
-		case ATTRIBUTE:
-			loadByAttribute(this.locator.tagName, locator.attributeName,this.locator.value);
-			break;
-		case XPATH:
-			loadByXPath(this.locator.value);
-			break;
-		}
-	}
-
 	@Override
 	public final String getName() {
 		return this.getAttribute("name");
@@ -270,15 +178,6 @@ public abstract  class SeleniumComponent implements Component {
 	@Override
 	public void setName(String value) {
 		this.setAttribute("name", value);
-	}
-
-	@Override
-	public void loadByName(final String value) {
-		this.locator = new Locator(Locator.LocatorType.NAME, value);
-		if (this.isDisplayed) {
-			this.setName(value);
-			this.setElement(selenium.findElement(By.name(value)));
-		}
 	}
 
 	@Override
@@ -292,17 +191,76 @@ public abstract  class SeleniumComponent implements Component {
 	}
 	
 	@Override
-	public void loadByXPath(final String value){		
-		this.locator = new Locator(Locator.LocatorType.XPATH , value);
-		if(this.isDisplayed){
-			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(), 	TIMEOUT);			
-			wait.until(ExpectedConditions.visibilityOf(getSeleniumWebDriver().findElement(By.xpath(value))));
-			setXPath(value);
-			setElement(getSeleniumWebDriver().findElement(By.xpath(value)));
-		}
-	
+	public void show() {
+		this.isDisplayed = true;
+		reloadElement();
 	}
 
+	@Override
+	public boolean isDisplayed() {
+		return this.isDisplayed;
+	}
+
+	@Override
+	public void hide() {
+		this.isDisplayed = false;
+	}
+	
+	/* ------------------------------------------------------------------------ *
+	 *							PUBLIC METHODS									*
+	 * ------------------------------------------------------------------------ */
+	/**
+	 * The Selenium-Webdriver element that represents the component HTML of the
+	 * simulated page.
+	 * 
+	 * @return Returns the newest DOM WebElement.
+	 */
+	public final WebElement getElement() {
+
+		if(this.locator == null){
+			throw new IllegalStateException(ErrorMessages.ERROR_CANNOT_RELOAD_ELEMENT);
+		}
+		
+		if(this.validated || this.element == null){
+			reloadElement();
+		}
+		return this.element;
+	}
+
+	/**
+	 * The Selenium-Webdriver element that represents the component HTML of the
+	 * simulated page.
+	 * 
+	 * @param element WebElement object
+	 */
+	public final void setElement(final WebElement element) {
+
+		if (element == null) {
+			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"element"));
+		}
+
+		this.element = element;
+		
+		if(!this.validated){
+			validateElementTag();
+			validateAttributes();
+			this.validated = true;
+		}
+	}
+
+	/**
+	 *	Reload an previously loaded element.
+	 */
+	public void reloadElement(){
+		
+		switch(this.locator.loadBy){
+			case XPATH:
+				loadByXPath(this.locator.value);
+			break;
+			default:
+				loadBy(this.locator);
+		}
+	}
 
 	/**
 	 * Verify if the element loaded is a valid element for the class that is
@@ -322,7 +280,7 @@ public abstract  class SeleniumComponent implements Component {
 	public void validateElementTag() {
 
 		String errorMsg = String.format(
-				ErrorMessages.ERROR_INVALID_TAG_TO_CLASS, getElement()
+				ErrorMessages.ERROR_INVALID_TAG_TO_CLASS, this.element
 						.getTagName());
 
 		if (!isValidElementTag()) {
@@ -331,17 +289,11 @@ public abstract  class SeleniumComponent implements Component {
 	}
 
 	public void validateAttributes() {
-
 		for (Entry<String, String> attribute : this.attributes.entrySet()) {		
-			  if(!attribute.getKey().equals("xpath"))
-				  if (!getElement().getAttribute(attribute.getKey())
-							.equalsIgnoreCase(attribute.getValue())) {
-						throw new IllegalArgumentException(
-								ErrorMessages.ERROR_ELEMENTS_ATTRIBUTES_NOT_MATCH);
-					}			
-
+			if(!attribute.getKey().equals("xpath")){
+				if (!this.element.getAttribute(attribute.getKey()).equalsIgnoreCase(attribute.getValue())) { throw new IllegalArgumentException(ErrorMessages.ERROR_ELEMENTS_ATTRIBUTES_NOT_MATCH);	}
 			}
-
+		}
 	}
 
 	/**
@@ -402,19 +354,88 @@ public abstract  class SeleniumComponent implements Component {
 		this.parent = parent;
 	}
 	
-	@Override
-	public void show() {
-		this.isDisplayed = true;
-		reloadElement();
-	}
+	/* ------------------------------------------------------------------------ *
+	 *							PRIVATE METHODS									*
+	 * ------------------------------------------------------------------------ */
+	
+	/**
+	 * Retrieve the webdriver element for the locator informed.
+	 * @param Locator of to webpage element.
+	 */
+	private void loadBy(final Locator locator){
+		
+		if (this.isDisplayed) {
+			switch (locator.loadBy) {
+			case ID:
+				this.setId(locator.value);
+				this.setElement(selenium.findElement(By.id(locator.value)));
+				break;
+			case NAME:
+				this.setName(locator.value);
+				this.setElement(selenium.findElement(By.name(locator.value)));
+				break;
+			case ATTRIBUTE:
+				WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),TIMEOUT);
+				ExpectedCondition<Boolean> resultsAreDisplayed = new ExpectedCondition<Boolean>() {
 
-	@Override
-	public boolean isDisplayed() {
-		return this.isDisplayed;
+					public Boolean apply(WebDriver arg0) {
+						List<WebElement> elements = getSeleniumWebDriver().findElements(By.tagName(locator.tagName));
+						for (WebElement el : elements) {
+							if ((el.getAttribute(locator.attributeName) != null) && (el.getAttribute(locator.attributeName).equalsIgnoreCase(locator.value))) {
+								setAttribute(locator.attributeName, locator.value);
+								setElement(el);
+								return true;
+							}
+						}
+						return false;
+					}
+				};
+				wait.until(resultsAreDisplayed);
+				break;
+				default:
+					throw new IllegalArgumentException(ErrorMessages.ERROR_LOCATOR_LOADBY_INCORRECT);
+			}
+		}
 	}
+	
+	/**
+	 * Inner private class to save the component's locator. 
+	 * @author icaroclever
+	 */
+	private static class Locator {
 
-	@Override
-	public void hide() {
-		this.isDisplayed = false;
-	}
+		public enum LocatorType{
+			ATTRIBUTE,
+			ID,
+			NAME,
+			XPATH;
+		}
+		
+		private LocatorType loadBy;
+		private String value;
+		private String tagName;
+		private String attributeName;
+
+		private Locator(LocatorType loadBy, String value) {
+			
+			// Preconditions
+			if(loadBy == null){ throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_PARAMETER_NULL,"loadBy")); }
+			if(value == null || value.isEmpty()){ throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_PARAMETER_NULL,"value")); }
+			
+			this.loadBy = loadBy;
+			this.value = value;
+		}
+
+		private Locator(String tagName, String attributeName, String value) {
+			
+			this(LocatorType.ATTRIBUTE, value);
+			
+			// Preconditions			
+			if(tagName == null || tagName.isEmpty()){ throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_PARAMETER_NULL,"tagName")); }
+			if(attributeName == null || attributeName.isEmpty()){ throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_PARAMETER_NULL,"attributeName")); }
+			
+			this.attributeName = attributeName;
+			this.tagName = tagName;
+		}
+	}	
 }

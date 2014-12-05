@@ -25,7 +25,7 @@ import br.ufmg.dcc.saotome.beholder.selenium.ui.SeleniumComponent;
 import br.ufmg.dcc.saotome.beholder.ui.form.RadioButton;
 
 /**
- * TODO
+ * Class implements Beholder RadioButton Interface.
  * @author icaroclever
  *
  */

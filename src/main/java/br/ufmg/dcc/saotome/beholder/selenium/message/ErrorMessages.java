@@ -26,7 +26,7 @@ package br.ufmg.dcc.saotome.beholder.selenium.message;
 public interface ErrorMessages {
 
 	String ERROR_BROWSER_INVALID = "The browser % is invalid.";
-	String ERROR_CANNOT_RELOAD_ELEMENT = "This element cannot be reloaded because there aren't ID or NAME attributes.";
+	String ERROR_CANNOT_RELOAD_ELEMENT = "This element cannot be reloaded because there aren't ID, NAME or ATRIBUTES to identify it.";
 	String ERROR_ELEMENT_WAS_NOT_LOADED = "WebElement was not loaded.";
 	String ERROR_TAGS_DIFFERENTS = "Element loaded is not of the same tag.";
 	String ERROR_ATTRIBUTE_EMPTY="Attribute cannot be null or empty";
@@ -43,4 +43,8 @@ public interface ErrorMessages {
 	String ERROR_FOLDER_CANNOT_BE_CREATED = "Folder cannot be created";
 	
 	String ERROR_UNKNOWN = "An unknown error happened in the Beholder Framework. Contact the tecnical suport.";
+	
+	String ERROR_PARAMETER_NULL="Paramenter %s cannot be null or empty";
+	
+	String ERROR_LOCATOR_LOADBY_INCORRECT="Locator loadBy cannot be used in the method loadby(Locator locator)";
 }
