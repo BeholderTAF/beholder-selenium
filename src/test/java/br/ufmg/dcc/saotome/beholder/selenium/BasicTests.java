@@ -30,6 +30,7 @@ import br.ufmg.dcc.saotome.beholder.Browser;
 import br.ufmg.dcc.saotome.beholder.builder.Builder;
 import br.ufmg.dcc.saotome.beholder.selenium.listener.ListenerGateway;
 import br.ufmg.dcc.saotome.beholder.selenium.listener.ScreenshotListener;
+import br.ufmg.dcc.saotome.beholder.selenium.ui.form.SeleniumTextField;
 import br.ufmg.dcc.saotome.beholder.ui.Div;
 import br.ufmg.dcc.saotome.beholder.ui.IFrame;
 import br.ufmg.dcc.saotome.beholder.ui.form.Button;
@@ -47,6 +48,8 @@ public class BasicTests {
 			.getClassLoader().getResource("prototype_iframe.html");
 	private static URL PROTOTYPE_PATH = BasicTests.class.getClassLoader()
 			.getResource("prototype.html");
+	private static URL PROTOTYPE_INPUT_TYPES_PATH = BasicTests.class.getClassLoader()
+			.getResource("prototype_input_types.html");
 	private Browser browser;
 	private Builder builder;
 
@@ -231,5 +234,16 @@ public class BasicTests {
 		div.show();
 		assert div.getText().contains("tab1");
 		
+	}
+	
+	@Test
+	public void verifyInputTypes(){
+		browser.open(PROTOTYPE_INPUT_TYPES_PATH);
+		String[] typeList = SeleniumTextField.VALID_TYPES.split(",");
+		
+		for(Integer counter=0; counter < typeList.length; counter++){
+			TextField input = builder.uiComponentBuilderInstance().textFieldInstance();
+			input.setId("idInput_"+typeList[counter]);
+		}
 	}
 }

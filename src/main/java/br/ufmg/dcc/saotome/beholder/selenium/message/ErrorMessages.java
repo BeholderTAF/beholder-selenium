@@ -47,4 +47,6 @@ public interface ErrorMessages {
 	String ERROR_PARAMETER_NULL="Paramenter %s cannot be null or empty";
 	
 	String ERROR_LOCATOR_LOADBY_INCORRECT="Locator loadBy cannot be used in the method loadby(Locator locator)";
+	
+	String ERROR_INVALID_INPUT_TYPE="The Element INPUT %s of the page is not of type (%s)";
 }
