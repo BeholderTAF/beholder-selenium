@@ -73,9 +73,11 @@ public abstract  class SeleniumComponent implements Component {
 	@Override
 	public String getAttribute(final String attribute) {
 		
-		if (this.element == null) { throw new IllegalArgumentException(ErrorMessages.ERROR_ELEMENT_WAS_NOT_LOADED); }
+		if (this.locator == null) { throw new IllegalArgumentException(ErrorMessages.ERROR_ELEMENT_WAS_NOT_LOADED); }
 		if (attribute == null || attribute.isEmpty()){ throw new IllegalArgumentException(ErrorMessages.ERROR_ATTRIBUTE_EMPTY); }
-		
+		if(this.element == null){
+			reloadElement();
+		}
 		return this.element.getAttribute(attribute);
 	}
 
