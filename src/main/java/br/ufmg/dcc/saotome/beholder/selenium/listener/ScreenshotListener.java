@@ -29,11 +29,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnhandledAlertException;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import org.testng.reporters.Files;
 
 import br.ufmg.dcc.saotome.beholder.selenium.message.ErrorMessages;
+import br.ufmg.dcc.saotome.beholder.selenium.message.WarnMessages;
 
 /**
  * This class listens tests that failed and take a PNG screenshot of the
@@ -71,6 +73,8 @@ public class ScreenshotListener extends TestListenerAdapter {
 			Files.copyFile(screenshot, screenshotFile); // Copy the screenshot
 														// to a repository
 														// folder
+		} catch (UnhandledAlertException e){
+			this.logger.debug(WarnMessages.WARN_ALERT_SCREENSHOT);
 		} catch (FileNotFoundException e) {
 			this.logger.error(ErrorMessages.ERROR_FILE_NOT_FOUND_EXCEPTION, e);
 		} catch (IOException e) {

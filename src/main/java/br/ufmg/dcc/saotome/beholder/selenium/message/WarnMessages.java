@@ -29,4 +29,5 @@ public interface WarnMessages {
 	String WARN_LONG_SIZE_SCREENSHOT = "The system cannot take a screenshot because the " +
 			"dimensions of the PNG file is greater than maximum allowed. The problem usually happens when" +
 			"there are to much information in the webpage.";
+	String WARN_ALERT_SCREENSHOT = "The system cannot take screenshots from Alerts";
 }
