@@ -34,7 +34,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.ufmg.dcc.saotome.beholder.selenium.message.ErrorMessages;
-import br.ufmg.dcc.saotome.beholder.selenium.ui.SeleniumComponent;
 
 /**
  * <p>The class WebElementAdapter was created to solve the DOM reference lost in
@@ -401,7 +400,7 @@ class WebElementAdapter implements WebElement{
 				}
 				
 				WebDriverWait wait = new WebDriverWait(driver,
-						SeleniumComponent.TIMEOUT);
+						SeleniumBrowser.getTimeout());
 				ExpectedCondition<WebElement> resultsAreDisplayed = new ExpectedCondition<WebElement>() {
 					public WebElement apply(WebDriver driver) {
 						return reload(driver, parent, locator);

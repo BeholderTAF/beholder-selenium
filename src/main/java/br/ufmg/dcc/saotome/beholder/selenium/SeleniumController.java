@@ -84,8 +84,7 @@ public final class SeleniumController {
 	/**
 	 * This method starts the selenium remote control using the parameters
 	 * informed by testng.xml file
-	 * @param parameters
-	 * @throws Exception
+	 * @param parameters Execution parameters for Beholder
 	 */
 	@BeforeSuite(alwaysRun=true)
 	@Parameters(value={"parameters"})
@@ -95,12 +94,15 @@ public final class SeleniumController {
 		
 		parametersInfo();
 		
-		String 	browserName = parametersMap.get("browser"),
-				profile = parametersMap.get("profile"),
-				chromeDriverBin = parametersMap.get("chromeDriverBin"),
-				ieDriverBin = parametersMap.get("ieDriverBin"),
-				chromeBin = parametersMap.get("chromeBin"),
-				languages = parametersMap.get("languages");
+		String 	browserName = parametersMap.get("browser")
+				,profile = parametersMap.get("profile")
+				,chromeDriverBin = parametersMap.get("chromeDriverBin")
+				,ieDriverBin = parametersMap.get("ieDriverBin")
+				,chromeBin = parametersMap.get("chromeBin")
+				,languages = parametersMap.get("languages")
+				,ajaxTimeout = parametersMap.get("ajaxTimeout")
+				,timeout = parametersMap.get("timeout")
+				;
 				
 		if(browserName == null){
 			throw new IllegalArgumentException(String.format(ErrorMessages.ERROR_TEMPLATE_VARIABLE_NULL,"browser"));
@@ -160,7 +162,13 @@ public final class SeleniumController {
 		 */
 		SeleniumController.driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		SeleniumController.builder = new SeleniumBuilder(driver);
-		SeleniumController.browser = new SeleniumBrowser();
+		SeleniumController.browser = SeleniumBrowser.getInstance();
+		if(ajaxTimeout != null){
+			SeleniumBrowser.setAjaxTimeout(new Long(ajaxTimeout));
+		}
+		if(timeout != null){
+			SeleniumBrowser.setTimeout(new Long(timeout));
+		}
 		ListenerGateway.setWebDriver(driver);
 		ListenerGateway.setParameters(parametersMap);
 	}
@@ -218,11 +226,11 @@ public final class SeleniumController {
 
 	/** 
 	 * This method returns parameter's value informed to run the tests.
-	 * @param parameter
-	 * @return the parametersMap
+	 * @param parameter string with parameter key
+	 * @return the parameter value
 	 */
-	public static String getParameter(String paramenter) {
-		return parametersMap.get(paramenter);
+	public static String getParameter(String parameter) {
+		return parametersMap.get(parameter);
 	}
 	
 	private static void parametersInfo(){

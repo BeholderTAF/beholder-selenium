@@ -86,7 +86,7 @@ implements TextField {
 	
 	/**
 	 * Verify if the input type of the loaded element is valid as a TextField object.
-	 * @param type
+	 * @param type Html input type
 	 * @return Returns true if type is:
 	 * <ul>
 	 * <li> text </li>

@@ -29,6 +29,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import br.ufmg.dcc.saotome.beholder.selenium.SeleniumBrowser;
 import br.ufmg.dcc.saotome.beholder.selenium.ui.SeleniumComponent;
 import br.ufmg.dcc.saotome.beholder.ui.form.Select;
 
@@ -132,7 +133,7 @@ public class SeleniumSelectField extends SeleniumComponent implements Select {
 				break;
 		}
 		
-		WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(), SeleniumComponent.TIMEOUT);
+		WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(), SeleniumBrowser.getTimeout());
 		ExpectedCondition<Option> resultsAreDisplayed = new ExpectedCondition<Option>() {
 
 			public Option apply(WebDriver driver) {

@@ -47,6 +47,7 @@ public class SeleniumCell implements Cell{
 	 * Recover a cell from a given table by its coordinates.
 	 * @param table Table element 
 	 * @param coordinate coordinates of cell in the table
+	 * @param type cell type. Can be HEAD, BODY or FOOT
 	 */
 	public SeleniumCell(final WebElement table,final Coordinate coordinate, final CellType type) {
 		
@@ -70,10 +71,14 @@ public class SeleniumCell implements Cell{
 	
 	/** 
 	 * Recover a cell from a given table by its coordinates.
+	 * @param table
+	 * 		table webelement
 	 * @param lineIndex
 	 * 		line index cell location (1 is the first line)
 	 * @param columnIndex
 	 * 		column index cell location (1 is the first column)
+	 * @param type
+	 * 		cell type. Can be HEAD, BODY or FOOT
 	 */
 	public SeleniumCell(WebElement table, Integer lineIndex, Integer columnIndex, CellType type){
 		this(table,new Coordinate(lineIndex, columnIndex),type);

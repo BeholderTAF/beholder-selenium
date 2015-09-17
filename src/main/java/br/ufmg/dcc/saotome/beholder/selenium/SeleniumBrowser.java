@@ -20,6 +20,7 @@
 package br.ufmg.dcc.saotome.beholder.selenium;
 
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -29,7 +30,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.ufmg.dcc.saotome.beholder.Browser;
 import br.ufmg.dcc.saotome.beholder.selenium.message.ErrorMessages;
-import br.ufmg.dcc.saotome.beholder.selenium.ui.SeleniumComponent;
 
 /**
  * Implements the Browser interface.
@@ -37,6 +37,20 @@ import br.ufmg.dcc.saotome.beholder.selenium.ui.SeleniumComponent;
  * @version 1.0
  */
 public class SeleniumBrowser implements Browser {
+	
+	
+	/** Maximum wait for a component */
+	private static long TIMEOUT = 25;// 25 seconds
+	private static long AJAX_TIMEOUT=5; // 5 seconds
+	private static final long NEXT_INSPECTION_TIME=500; // Next inspection of the webdriver wait.
+	private static final SeleniumBrowser INSTANCE = new SeleniumBrowser();
+	
+	/* Singleton Contructor */
+	private SeleniumBrowser () {}
+	
+	public static final SeleniumBrowser getInstance(){
+		return INSTANCE;
+	}
 
 	public void open(final URL url) {
 		if (url == null) {
@@ -48,14 +62,17 @@ public class SeleniumBrowser implements Browser {
 	@Override
 	public boolean isTextPresent(final String text) {
 
+		SeleniumController.getDriver().manage().timeouts().pageLoadTimeout(SeleniumBrowser.TIMEOUT, TimeUnit.SECONDS);
+		final String expression = text.toLowerCase();
+		
 		try {
-			WebDriverWait wait = new WebDriverWait(SeleniumController.getDriver(), SeleniumComponent.TIMEOUT);
+			WebDriverWait wait = new WebDriverWait(SeleniumController.getDriver(), SeleniumBrowser.AJAX_TIMEOUT,NEXT_INSPECTION_TIME);
 
 			ExpectedCondition<Boolean> resultsAreDisplayed = new ExpectedCondition<Boolean>() {
-				public Boolean apply(WebDriver arg0) {
-					String expression = text.toLowerCase();
-					String pageText = SeleniumController.getDriver().findElement(By.tagName("body")).getText().toLowerCase();
-					return pageText	.contains(expression);
+				public Boolean apply(WebDriver webdriver) {
+					
+					String pageText = webdriver.findElement(By.tagName("body")).getText().toLowerCase();
+					return pageText.contains(expression);
 				}
 			};
 			wait.until(resultsAreDisplayed);
@@ -92,5 +109,33 @@ public class SeleniumBrowser implements Browser {
 	@Override	
 	public Alert getAlert() {
 		return new SeleniumAlert();
+	}
+
+	/**
+	 * @return the page timeout in seconds 
+	 */
+	public static final long getTimeout() {
+		return SeleniumBrowser.TIMEOUT;
+	}
+
+	/**
+	 * @param timeout the page timeout to set in seconds
+	 */
+	public static final void setTimeout(long timeout) {
+		SeleniumBrowser.TIMEOUT = timeout;
+	}
+
+	/**
+	 * @return the ajax wait Timeout in seconds 
+	 */
+	public static final long getAjaxTimeout() {
+		return SeleniumBrowser.AJAX_TIMEOUT;
+	}
+
+	/**
+	 * @param ajaxTimeout the ajax wait Timeout to set in secods
+	 */
+	public static final void setAjaxTimeout(long ajaxTimeout) {
+		SeleniumBrowser.AJAX_TIMEOUT = ajaxTimeout;
 	}
 }

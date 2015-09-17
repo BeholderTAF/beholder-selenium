@@ -12,7 +12,7 @@
      <logger name="general" level="info">
         <appender-ref ref="Beholder"/>
      </logger>
-     <logger name="br" level="trace">
+     <logger name="br" level="info">
         <appender-ref ref="Tests"/>
      </logger>
    </loggers>

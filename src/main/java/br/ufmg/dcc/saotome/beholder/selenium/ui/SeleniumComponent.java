@@ -32,6 +32,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import br.ufmg.dcc.saotome.beholder.selenium.SeleniumBrowser;
 import br.ufmg.dcc.saotome.beholder.selenium.message.ErrorMessages;
 import br.ufmg.dcc.saotome.beholder.ui.Component;
 
@@ -44,9 +45,6 @@ import br.ufmg.dcc.saotome.beholder.ui.Component;
  * @see Component
  */
 public abstract  class SeleniumComponent implements Component {
-
-	/** Maximum wait for a component */
-	public static final long TIMEOUT = 30;// seconds
 	
 	private final WebDriver selenium;
 	private SeleniumComponent parent;
@@ -113,7 +111,7 @@ public abstract  class SeleniumComponent implements Component {
 		this.locator = new Locator(tagName, attributeName,value);
 		
 		if (this.isDisplayed) {
-			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),TIMEOUT);
+			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),SeleniumBrowser.getTimeout());
 		
 			wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName(tagName)));
 			List<WebElement> elements;
@@ -155,7 +153,7 @@ public abstract  class SeleniumComponent implements Component {
 	public void loadByXPath(final String value){		
 		this.locator = new Locator(Locator.LocatorType.XPATH , value);
 		if(this.isDisplayed){
-			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(), 	TIMEOUT);			
+			WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(), 	SeleniumBrowser.getTimeout());			
 			wait.until(ExpectedConditions.visibilityOf(getSeleniumWebDriver().findElement(By.xpath(value))));
 			setXPath(value);
 			setElement(getSeleniumWebDriver().findElement(By.xpath(value)));
@@ -309,8 +307,8 @@ public abstract  class SeleniumComponent implements Component {
 
 	/**
 	 * This method returns the basic location that represents the html object in
-	 * the html page. For example, if a object is identified by tag <tag
-	 * attrib="foo">, the basic xpath must be a[ \@attrib='foo' ]
+	 * the html page. For example, if a object is identified by tag {@literal <tag
+	 * attrib="foo">}, the basic xpath must be a[ \@attrib='foo' ]
 	 * 
 	 * @return Returns a minimal xpath representation of the html object on the
 	 *         browser's page.
@@ -377,7 +375,7 @@ public abstract  class SeleniumComponent implements Component {
 				this.setElement(selenium.findElement(By.name(locator.value)));
 				break;
 			case ATTRIBUTE:
-				WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),TIMEOUT);
+				WebDriverWait wait = new WebDriverWait(getSeleniumWebDriver(),SeleniumBrowser.getTimeout());
 				ExpectedCondition<Boolean> resultsAreDisplayed = new ExpectedCondition<Boolean>() {
 
 					public Boolean apply(WebDriver arg0) {
