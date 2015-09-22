@@ -139,7 +139,7 @@ public class ScreenshotListener extends TestListenerAdapter {
 		String path;
 				
 		if (tr != null) { // tr is null only on tests purpose
-			path = String.format("%s%c%s.png", parentFolder.getAbsolutePath(), File.separatorChar, tr.getName(), getDateSuffix());
+			path = String.format("%s%c%s%s.png", parentFolder.getAbsolutePath(), File.separatorChar, tr.getName(), getDateSuffix(),tr.getInstance());
 		} else {
 			path = String.format("%s%ctest_%d.png", parentFolder.getAbsolutePath(), File.separatorChar, System.currentTimeMillis());
 		}
